@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="../normalize.css" />
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="icon" href="data:;" />
+    <script
+      src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Removed the inline <style> and moved it to styles.css -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel" data-type="module">
+      import React, { useState, useEffect } from "https://esm.sh/react@18?dev";
+      import { createRoot } from "https://esm.sh/react-dom@18/client?dev";
+      import * as zebar from "https://esm.sh/zebar@2";
+
+      const providers = zebar.createProviderGroup({
+        network: { type: "network" },
+        glazewm: { type: "glazewm" },
+        cpu: { type: "cpu" },
+        date: { type: "date", formatting: "EEE d MMM t" },
+        battery: { type: "battery" },
+        memory: { type: "memory" },
+        weather: { type: "weather" },
+        media: { type: "media" },
+        audio: { type: "audio" },
+      });
+
+      function VolumeControl() {
+        const [volume, setVolume] = useState(50);
+        const [prevVolume, setPrevVolume] = useState(50);
+
+        useEffect(() => {
+          async function loadVolume() {
+            const defaultDevice =
+              await providers.outputMap.audio?.defaultPlaybackDevice;
+            if (defaultDevice && defaultDevice.volume != null) {
+              setVolume(defaultDevice.volume);
+              setPrevVolume(defaultDevice.volume || 50);
+            }
+          }
+          loadVolume();
+        }, []);
+
+        async function handleVolumeChange(e) {
+          const newVolume = Number(e.target.value);
+          setVolume(newVolume);
+          try {
+            await providers.outputMap.audio?.setVolume(newVolume);
+          } catch (err) {
+            console.error("Error setting volume:", err);
+          }
+        }
+
+        async function handleMuteToggle() {
+          if (volume === 0) {
+            setVolume(prevVolume);
+            await providers.outputMap.audio?.setVolume(prevVolume);
+          } else {
+            setPrevVolume(volume);
+            setVolume(0);
+            await providers.outputMap.audio?.setVolume(0);
+          }
+        }
+
+        return (
+          <div className="volume-slider-container">
+            <i
+              className={
+                volume === 0 ? "nf nf-fa-volume_off" : "nf nf-fa-volume_up"
+              }
+              onClick={handleMuteToggle}
+            ></i>
+            <input
+              className="volume-slider"
+              type="range"
+              min="0"
+              max="100"
+              value={volume}
+              onChange={handleVolumeChange}
+            />
+          </div>
+        );
+      }
+
+      function getBatteryIcon(batteryOutput) {
+        if (batteryOutput.chargePercent > 90) return <i className="nf nf-fa-battery_4"></i>;
+        if (batteryOutput.chargePercent > 70) return <i className="nf nf-fa-battery_3"></i>;
+        if (batteryOutput.chargePercent > 40) return <i className="nf nf-fa-battery_2"></i>;
+        if (batteryOutput.chargePercent > 20) return <i className="nf nf-fa-battery_1"></i>;
+        return <i className="nf nf-fa-battery_0"></i>;
+      }
+
+      function App() {
+        const [output, setOutput] = useState(providers.outputMap);
+
+        useEffect(() => {
+          const unsubscribe = providers.onOutput(() =>
+            setOutput(providers.outputMap)
+          );
+          return () => unsubscribe();
+        }, []);
+
+        function togglePlayPause() {
+          const currentSession = output.media?.currentSession;
+          if (!currentSession) return;
+          output.media
+            .togglePlayPause()
+            .then(providers.refresh)
+            .catch(console.error);
+        }
+
+        return (
+          <div className="app">
+            <div className="left">
+              {output.date?.formatted}
+            </div>
+
+            <div className="center">
+              {output.glazewm && (
+                <div className="workspaces">
+                  {output.glazewm.currentWorkspaces.map((ws) => (
+                    <button
+                      className={[
+                        "workspace",
+                        ws.hasFocus ? "focused" : "",
+                        ws.isDisplayed ? "displayed" : "",
+                      ].join(" ")}
+                      onClick={() =>
+                        output.glazewm.runCommand(`focus --workspace ${ws.name}`)
+                      }
+                      key={ws.name}
+                    >
+                      {ws.displayName ?? ws.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {output.media && (
+                <div className="media-controls">
+                  <button onClick={() => output.media.previous()}>
+                    <i className="nf nf-fa-step_backward"></i>
+                  </button>
+                  <button onClick={togglePlayPause}>
+                    {output.media?.currentSession?.isPlaying ? (
+                      <i className="nf nf-fa-pause"></i>
+                    ) : (
+                      <i className="nf nf-fa-play"></i>
+                    )}
+                  </button>
+                  <button onClick={() => output.media.next()}>
+                    <i className="nf nf-fa-step_forward"></i>
+                  </button>
+                  <VolumeControl />
+                  <div className="media-info">
+                    <span className="scrolling-text">
+                      {output.media?.currentSession?.title || "♥️"}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="right">
+              {output.glazewm && (
+                <>
+                  {output.glazewm.bindingModes.map((bindingMode) => (
+                    <button
+                      className="binding-mode"
+                      key={bindingMode.name}
+                      onClick={() =>
+                        output.glazewm.runCommand(
+                          `wm-disable-binding-mode --name ${bindingMode.name}`
+                        )
+                      }
+                    >
+                      {bindingMode.displayName ?? bindingMode.name}
+                    </button>
+                  ))}
+
+                  <button
+                    className={`tiling-direction nf ${
+                      output.glazewm.tilingDirection === "horizontal"
+                        ? "nf-md-swap_horizontal"
+                        : "nf-md-swap_vertical"
+                    }`}
+                    onClick={() =>
+                      output.glazewm.runCommand("toggle-tiling-direction")
+                    }
+                  ></button>
+                </>
+              )}
+              {output.network && (
+                <div className="network">
+                  <i className="nf nf-md-wifi_strength_4"></i>
+                  {output.network.defaultGateway?.ssid}
+                </div>
+              )}
+              {output.battery && (
+                <div className="battery">
+                  {output.battery.isCharging && (
+                    <i className="nf nf-md-power_plug charging-icon"></i>
+                  )}
+                  {getBatteryIcon(output.battery)}{" "}
+                  {Math.round(output.battery.chargePercent)}%
+                </div>
+              )}
+              {output.weather && (
+                <div className="weather">
+                  <i className="nf nf-weather-day_sunny"></i>
+                  {output.weather.celsiusTemp != null
+                    ? `${Math.round(output.weather.celsiusTemp)}°C`
+                    : "N/A"}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,227 @@
+@import 'https://www.nerdfonts.com/assets/css/webfont.css';
+
+body {
+  color: rgb(0 255 0 / 90%);
+  font-family: ui-monospace, monospace;
+  font-size: 15px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
+  background: rgb(0 0 0 / 85%);
+}
+
+/* Minimal white slider styling from original inline <style> */
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 2px;
+  background: #ffffff;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 2px;
+  height: 13px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  margin-top: 0px;
+  position: relative;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 1px;
+  height: 14px;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  margin-top: 6px;
+}
+
+.volume-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Layout Styling */
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  height: 100%;
+  padding: 2px 1.5vw;
+  color: #ffffff;
+  font-size: 12px;
+  background: transparent;
+}
+
+.left {
+  grid-column: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.center {
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.right {
+  grid-column: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Workspace Buttons */
+.workspaces {
+  display: flex;
+  align-items: center;
+}
+
+.workspace {
+  background: rgb(255 255 255 / 5%);
+  margin-right: 4px;
+  padding: 4px 8px;
+  color: rgb(255 255 255 / 90%);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.workspace.displayed {
+  background: rgb(255 255 255 / 15%);
+}
+
+.workspace.focused,
+.workspace:hover {
+  background: rgb(100 255 100 / 50%);
+}
+
+/* Status Indicators */
+.binding-mode,
+.tiling-direction,
+.network,
+.memory,
+.cpu,
+.battery {
+  margin-right: 20px;
+}
+
+.binding-mode,
+.tiling-direction {
+  background: rgb(255 255 255 / 15%);
+  color: rgb(255 255 255 / 90%);
+  border-radius: 2px;
+  line-height: 1;
+  padding: 4px 8px;
+  border: 0;
+  cursor: pointer;
+}
+
+.cpu .high-usage {
+  color: #900029;
+}
+
+.battery {
+  position: relative;
+}
+
+.battery .charging-icon {
+  position: absolute;
+  font-size: 7px;
+  left: -8px;
+  top: 3px;
+}
+
+/* Media Controls */
+.media-controls {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.media-controls button {
+  background: none;
+  border: none;
+  color: rgb(255 255 255 / 90%);
+  margin: 0 2px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.media-controls button:hover {
+  color: rgb(255 255 255 / 90%);
+}
+
+/* Media Title Styling */
+.media-info {
+  font-size: 10px;
+  color: rgb(255 255 255 / 70%);
+  margin-left: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  position: relative;
+}
+
+.scrolling-text {
+  display: inline-block;
+  position: relative;
+  transform: translateX(0);
+  animation: none;
+  will-change: transform;
+}
+
+.media-info:hover .scrolling-text {
+  animation: scroll-title 8s linear infinite;
+}
+
+/* Keyframe Animation for Scrolling */
+@keyframes scroll-title {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Updated volume slider thumb color */
+.volume-slider::-webkit-slider-thumb {
+  background: #ffffff;
+  margin-top: 0px;
+}
+
+.volume-slider::-moz-range-thumb {
+  background: #00ff00;
+  margin-top: 0px;
+}
+
+/* Icon styling */
+i {
+  color: rgb(255 255 255 / 95%);
+  margin-right: 7px;
+}
