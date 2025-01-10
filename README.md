@@ -1,13 +1,13 @@
 # Minimal Zebar
 
-A minimalist theme for Zebar, designed to work seamlessly with GlazeWM. It features media controls, volume adjustment, and track information in a clean layout.
+A minimalist theme for Zebar with GlazeWM.
 
 ## Features
 
 - GlazeWM workspace display
 - Integrated media controls
-- Volume adjustment
-- Track information
+- Volume control
+- Track title
 
 ## Screenshot
 
@@ -16,7 +16,5 @@ A minimalist theme for Zebar, designed to work seamlessly with GlazeWM. It featu
 ## Installation
 
 1. Backup `with-glazewm.html` and `styles.css` from `.glzr/zebar/starter/`.
-2. Copy the theme files into `.glzr/zebar/starter/`.
+2. Copy these files into `.glzr/zebar/starter/` and replace existing files.
 3. Update your GlazeWM config to add a `27px` top margin.
-
-For issues or suggestions, open an issue in this repository.
