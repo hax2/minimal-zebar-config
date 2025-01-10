@@ -9,7 +9,7 @@ A minimalist theme for Zebar with GlazeWM.
 - Volume control
 - Track title
 
-## Screenshot
+## Looks like this
 
 ![image](https://github.com/hax2/minimal-zebar-config/blob/main/image.jpg?raw=true)
 
