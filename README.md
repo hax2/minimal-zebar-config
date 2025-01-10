@@ -11,7 +11,8 @@ A minimalist theme for Zebar with GlazeWM.
 
 ## Screenshot
 
-(*Add your screenshot here.*)
+![image](https://github.com/hax2/minimal-zebar-config/blob/main/image.jpg?raw=true)
+
 
 ## Installation
 
