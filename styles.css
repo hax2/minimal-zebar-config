@@ -183,7 +183,7 @@ body,
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 350px;
   position: relative;
 }
 
