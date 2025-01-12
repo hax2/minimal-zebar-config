@@ -5,9 +5,9 @@ A minimalist theme for Zebar with GlazeWM.
 ## Features
 
 - GlazeWM workspace display
-- Integrated media controls
+- Media controls
 - Volume control
-- Track title
+- Media track title
 
 ## Looks like this
 
